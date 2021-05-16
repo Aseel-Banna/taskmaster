@@ -6,13 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".addTask">
 
+
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:navigationIcon="@drawable/ic_baseline_arrow_back_24"-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="?attr/colorPrimary"-->
+<!--        android:minHeight="?attr/actionBarSize"-->
+<!--        android:theme="?attr/actionBarTheme"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginLeft="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="75dp"
         android:text="Add Task"
         android:textColor="#000000"
         android:textSize="30sp"
