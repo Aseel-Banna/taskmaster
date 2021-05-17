@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-public class addTask extends AppCompatActivity {
+public class AddTask extends AppCompatActivity {
 
     TextView submit;
 
