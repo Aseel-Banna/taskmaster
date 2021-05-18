@@ -1,7 +1,10 @@
 package com.example.myfirstapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,11 +13,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     Button addTask, allTasks, task1, task2, task3;
     String title1, title2, title3;
     TextView welcome_user;
+
+    private TextView taskTitle;
+    private TextView taskBody;
+    private TextView taskState;
+
+    String title, body, state;
+
+    ArrayList<Task> tasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,22 +35,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         addTask = findViewById(R.id.button);
         allTasks = findViewById(R.id.button2);
-        task1 = findViewById(R.id.button5);
-        task2 = findViewById(R.id.button6);
-        task3 = findViewById(R.id.button7);
 
         welcome_user = findViewById(R.id.user_welcome);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         welcome_user.setText(sharedPreferences.getString("username", "User") + "'s Tasks");
 
-        task1.setText("Task 1");
-        task2.setText("Task 2");
-        task3.setText("Task 3");
+        taskTitle = findViewById(R.id.taskTitle);
+        taskBody = findViewById(R.id.taskBody);
+        taskState =findViewById(R.id.taskState);
 
-        title1= task1.getText().toString();
-        title2= task2.getText().toString();
-        title3= task3.getText().toString();
+        RecyclerView rvTasks = findViewById(R.id.recyclerView);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvTasks.setLayoutManager(layoutManager);
+
+        tasks = Task.createTasksList(3);
+        TaskAdapter adapter = new TaskAdapter(tasks);
+        rvTasks.setAdapter(adapter);
+        rvTasks.setLayoutManager(new LinearLayoutManager(this));
+
+        tasks.add(0, new Task("Task 1", "It is the first task I have created", "complete"));
+        adapter.notifyItemInserted(0);
+
+        tasks.add(1, new Task("Task 2", "It is the second task I have created", "in progress"));
+        adapter.notifyItemInserted(1);
+
+        tasks.add(2, new Task("Task 3", "It is the third task I have created", "new"));
+        adapter.notifyItemInserted(2);
+
 
     }
 
@@ -61,21 +87,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(details);
     }
 
-    public void taskDetails(View view) {
-        Intent details = new Intent( MainActivity.this, Details.class);
-        details.putExtra("title", title1);
-        startActivity(details);
-    }
-
-    public void taskDetails2(View view) {
-        Intent details = new Intent( MainActivity.this, Details.class);
-        details.putExtra("title", title2);
-        startActivity(details);
-    }
-
-    public void taskDetails3(View view) {
-        Intent details = new Intent( MainActivity.this, Details.class);
-        details.putExtra("title", title3);
-        startActivity(details);
-    }
 }
