@@ -27,47 +27,50 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                 taskBody = itemView.findViewById(R.id.taskBody);
                 taskState = itemView.findViewById(R.id.taskState);
                 itemView.setOnClickListener(this);
-                //            void bind(int listIndex) {
-//                taskTitle.setText(mTasks[listIndex]);
-//
-                        // Define click listener for the ViewHolder's View
-
         }
 
-
-
-            public TextView getTextView() {
+        public TextView getTextView() {
                 return taskTitle;
             }
+        public TextView getTextView2() {
+            return taskBody;
+        }
+        public TextView getTextView3() {
+            return taskState;
+        }
 
 
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            Intent intent;
-            switch (clickedPosition) {
-                case 0: //first item in Recycler view
-                    intent = new Intent (itemView.getContext(), Details.class);
-                    intent.putExtra("title",  "Task 1");
-                    intent.putExtra("body",  "It is the first task I have created");
-                    intent.putExtra("state", "complete");
-                    itemView.getContext().startActivity(intent);
-                    break;
-                case 1: //second item in Recycler view
-                    intent = new Intent (itemView.getContext(), Details.class);
-                    intent.putExtra("title",  "Task 2");
-                    intent.putExtra("body",  "It is the second task I have created");
-                    intent.putExtra("state", "in progress");
-                    itemView.getContext().startActivity(intent);
-                    break;
-                case 2: //third item in Recycler view
-                    intent = new Intent (itemView.getContext(), Details.class);
-                    intent.putExtra("title",  "Task 3");
-                    intent.putExtra("body",  "It is the third task I have created");
-                    intent.putExtra("state", "new");
-                    itemView.getContext().startActivity(intent);
-                    break;
-            }
+            Intent intent= new Intent (itemView.getContext(), Details.class);
+            intent.putExtra("title", getTextView().getText() );
+            intent.putExtra("body",  getTextView2().getText());
+            intent.putExtra("state", getTextView3().getText());
+            itemView.getContext().startActivity(intent);
+//            switch (clickedPosition) {
+//                case 0:
+//                    intent = new Intent (itemView.getContext(), Details.class);
+//                    intent.putExtra("title",  "Task 1");
+//                    intent.putExtra("body",  "It is the first task I have created");
+//                    intent.putExtra("state", "complete");
+//                    itemView.getContext().startActivity(intent);
+//                    break;
+//                case 1:
+//                    intent = new Intent (itemView.getContext(), Details.class);
+//                    intent.putExtra("title",  "Task 2");
+//                    intent.putExtra("body",  "It is the second task I have created");
+//                    intent.putExtra("state", "in progress");
+//                    itemView.getContext().startActivity(intent);
+//                    break;
+//                case 2:
+//                    intent = new Intent (itemView.getContext(), Details.class);
+//                    intent.putExtra("title",  "Task 3");
+//                    intent.putExtra("body",  "It is the third task I have created");
+//                    intent.putExtra("state", "new");
+//                    itemView.getContext().startActivity(intent);
+//                    break;
+//            }
 
         }
     }
@@ -75,7 +78,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     private List<Task> mTasks;
 
-    public TaskAdapter(ListItemClickListener listener, List<Task> tasks) {
+    public TaskAdapter(List<Task> tasks, ListItemClickListener listener) {
         this.mOnClickListener = listener;
         mTasks = tasks;
     }

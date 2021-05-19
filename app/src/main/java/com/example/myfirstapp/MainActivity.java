@@ -3,6 +3,8 @@ package com.example.myfirstapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Database;
+import androidx.room.Room;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,24 +12,31 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TaskAdapter.ListItemClickListener {
 
     Button addTask, allTasks, task1, task2, task3;
     String title1, title2, title3;
     TextView welcome_user;
+    TaskDao taskDao;
 
     private TextView taskTitle;
     private TextView taskBody;
     private TextView taskState;
 
     String title, body, state;
+    RecyclerView rvTasks;
+
+    int count;
 
     ArrayList<Task> tasks;
+    AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,29 +50,22 @@ public class MainActivity extends AppCompatActivity {
 
         welcome_user.setText(sharedPreferences.getString("username", "User") + "'s Tasks");
 
+        db= Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "task_master").allowMainThreadQueries().build();
+
         taskTitle = findViewById(R.id.taskTitle);
         taskBody = findViewById(R.id.taskBody);
         taskState =findViewById(R.id.taskState);
 
-        RecyclerView rvTasks = findViewById(R.id.recyclerView);
+        rvTasks = findViewById(R.id.recyclerView);
+
+        taskDao = db.taskDao();
+        tasks = (ArrayList<Task>) taskDao.getAll();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTasks.setLayoutManager(layoutManager);
-
-        tasks = Task.createTasksList(3);
-        TaskAdapter adapter = new TaskAdapter(tasks);
-        rvTasks.setAdapter(adapter);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
-
-        tasks.add(0, new Task("Task 1", "It is the first task I have created", "complete"));
-        adapter.notifyItemInserted(0);
-
-        tasks.add(1, new Task("Task 2", "It is the second task I have created", "in progress"));
-        adapter.notifyItemInserted(1);
-
-        tasks.add(2, new Task("Task 3", "It is the third task I have created", "new"));
-        adapter.notifyItemInserted(2);
-
+        rvTasks.setAdapter(new TaskAdapter(tasks, this));
 
     }
 
@@ -87,4 +89,43 @@ public class MainActivity extends AppCompatActivity {
         startActivity(details);
     }
 
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tasks = (ArrayList<Task>) taskDao.getAll();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvTasks.setLayoutManager(layoutManager);
+        rvTasks.setLayoutManager(new LinearLayoutManager(this));
+        rvTasks.setAdapter(new TaskAdapter(tasks, this));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        tasks = (ArrayList<Task>) taskDao.getAll();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvTasks.setLayoutManager(layoutManager);
+        rvTasks.setLayoutManager(new LinearLayoutManager(this));
+        rvTasks.setAdapter(new TaskAdapter(tasks, this));
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        tasks = (ArrayList<Task>) taskDao.getAll();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvTasks.setLayoutManager(layoutManager);
+        rvTasks.setLayoutManager(new LinearLayoutManager(this));
+        rvTasks.setAdapter(new TaskAdapter(tasks, this));
+    }
 }

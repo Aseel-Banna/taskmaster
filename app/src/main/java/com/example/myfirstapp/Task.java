@@ -1,17 +1,45 @@
 package com.example.myfirstapp;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Fts4;
+import androidx.room.PrimaryKey;
+import androidx.room.Room;
+
 import java.util.ArrayList;
 
+//@Fts4(languageId = "lid")
+@Entity(tableName = "task")
 public class Task {
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+
+    @ColumnInfo(name = "task_title")
     String title;
+
+    @ColumnInfo(name = "task_body")
     String body;
+
+    @ColumnInfo(name = "task_state")
     String state;
+
+//    @ColumnInfo(name = "lid")
+//    int languageId;
 
     public Task(String title, String body, String state) {
         this.title = title;
         this.body = body;
         this.state = state;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     public String getTitle() {
         return title;
@@ -45,4 +73,7 @@ public class Task {
 //        }
         return tasks;
     }
+
+//    AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+//            AppDatabase.class, "tasks").build();
 }
