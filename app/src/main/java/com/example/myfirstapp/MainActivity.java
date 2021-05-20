@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
     ArrayList<Task> tasks;
     AppDatabase db;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(tasks, this));
+
 
     }
 

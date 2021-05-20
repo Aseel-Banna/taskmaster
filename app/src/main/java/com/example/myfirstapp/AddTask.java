@@ -40,6 +40,8 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
 
         submit = findViewById(R.id.textView7);
         submit.setVisibility(View.INVISIBLE);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Add Task");
         btn = findViewById(R.id.button3);
         Spinner dropdown = findViewById(R.id.spinner1);
         String[] items = new String[]{"new", "assigned", "in progress", "complete"};
