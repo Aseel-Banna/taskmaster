@@ -20,6 +20,7 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Settings");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         nameOfuser = sharedPreferences.getString("username", "User");
         save = findViewById(R.id.button4);

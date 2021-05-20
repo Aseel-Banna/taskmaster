@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     String title1, title2, title3;
     TextView welcome_user;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         title1= task1.getText().toString();
         title2= task2.getText().toString();
         title3= task3.getText().toString();
+
 
     }
 

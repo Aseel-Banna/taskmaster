@@ -31,6 +31,7 @@ public class Details extends AppCompatActivity {
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle( title +" Details");
 
     }
     @Override

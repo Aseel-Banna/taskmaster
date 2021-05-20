@@ -20,6 +20,7 @@ public class AddTask extends AppCompatActivity {
         submit = findViewById(R.id.textView7);
         submit.setVisibility(View.INVISIBLE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Add Task");
 
     }
     @Override
