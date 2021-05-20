@@ -1,20 +1,42 @@
 package com.example.myfirstapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Database;
+import androidx.room.Room;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements TaskAdapter.ListItemClickListener {
 
     Button addTask, allTasks, task1, task2, task3;
     String title1, title2, title3;
     TextView welcome_user;
+    TaskDao taskDao;
+
+    private TextView taskTitle;
+    private TextView taskBody;
+    private TextView taskState;
+
+    String title, body, state;
+    RecyclerView rvTasks;
+
+    int count;
+
+    ArrayList<Task> tasks;
+    AppDatabase db;
 
 
     @Override
@@ -23,22 +45,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         addTask = findViewById(R.id.button);
         allTasks = findViewById(R.id.button2);
-        task1 = findViewById(R.id.button5);
-        task2 = findViewById(R.id.button6);
-        task3 = findViewById(R.id.button7);
 
         welcome_user = findViewById(R.id.user_welcome);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         welcome_user.setText(sharedPreferences.getString("username", "User") + "'s Tasks");
 
-        task1.setText("Task 1");
-        task2.setText("Task 2");
-        task3.setText("Task 3");
+        db= Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "task_master").allowMainThreadQueries().build();
 
-        title1= task1.getText().toString();
-        title2= task2.getText().toString();
-        title3= task3.getText().toString();
+        taskTitle = findViewById(R.id.taskTitle);
+        taskBody = findViewById(R.id.taskBody);
+        taskState =findViewById(R.id.taskState);
+
+        rvTasks = findViewById(R.id.recyclerView);
+
+        taskDao = db.taskDao();
+        tasks = (ArrayList<Task>) taskDao.getAll();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvTasks.setLayoutManager(layoutManager);
+        rvTasks.setLayoutManager(new LinearLayoutManager(this));
+        rvTasks.setAdapter(new TaskAdapter(tasks, this));
 
 
     }
@@ -63,21 +91,43 @@ public class MainActivity extends AppCompatActivity {
         startActivity(details);
     }
 
-    public void taskDetails(View view) {
-        Intent details = new Intent( MainActivity.this, Details.class);
-        details.putExtra("title", title1);
-        startActivity(details);
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+
     }
 
-    public void taskDetails2(View view) {
-        Intent details = new Intent( MainActivity.this, Details.class);
-        details.putExtra("title", title2);
-        startActivity(details);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tasks = (ArrayList<Task>) taskDao.getAll();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvTasks.setLayoutManager(layoutManager);
+        rvTasks.setLayoutManager(new LinearLayoutManager(this));
+        rvTasks.setAdapter(new TaskAdapter(tasks, this));
     }
 
-    public void taskDetails3(View view) {
-        Intent details = new Intent( MainActivity.this, Details.class);
-        details.putExtra("title", title3);
-        startActivity(details);
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        tasks = (ArrayList<Task>) taskDao.getAll();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvTasks.setLayoutManager(layoutManager);
+        rvTasks.setLayoutManager(new LinearLayoutManager(this));
+        rvTasks.setAdapter(new TaskAdapter(tasks, this));
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        tasks = (ArrayList<Task>) taskDao.getAll();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvTasks.setLayoutManager(layoutManager);
+        rvTasks.setLayoutManager(new LinearLayoutManager(this));
+        rvTasks.setAdapter(new TaskAdapter(tasks, this));
     }
 }
