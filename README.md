@@ -16,5 +16,11 @@ Also, there is a title for the tasks buttons that is related to the user name.<b
 * Details: By default, it has no description for tasks, but once the user click on the task item in the home page and get to the details activity, a title related to the task, body and the state of the task will be displayed.<br/>
 ![image description](screenshots/details.PNG)<br/>
 
+## Test
+For testing hte app, we have used Espresso Test with implementing the dependencies in build.gradle file.
 
+* onView(withId(R.id.ID)): This is used to check if the component is exist in the activity or not.
+* onView(withId(R.id.ID)).perform(click()): This is used to check if the component is clickable such as buttons, recyclerViews and items in recyclerViews.
+* onView(withId(R.id.ID)).check(matches(withText("Test"))): This is used to check if the text of the component is equal to "Test".
+* onView(withId(R.id.ID)).check(matches(isDisplayed())): This is used to check if the component is displayed or not.
 
