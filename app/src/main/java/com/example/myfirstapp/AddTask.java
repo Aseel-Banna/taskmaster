@@ -1,12 +1,10 @@
 package com.example.myfirstapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
 import androidx.room.Room;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,8 +13,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.TaskEntity;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class AddTask extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -57,6 +57,7 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
     }
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
@@ -75,6 +76,37 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
         body = taskBody.getText().toString();
 
         Task task = new Task(title, body, state );
+
+        TaskEntity item = TaskEntity.builder()
+                .title(title)
+                .body(body)
+                .state(state)
+                .build();
+
+        Amplify.DataStore.save(item,
+                success -> Log.i("Tutorial", "Saved item: " + success.item().getTitle()),
+                error -> Log.e("Tutorial", "Could not save item to DataStore", error)
+        );
+
+        Amplify.DataStore.query(TaskEntity.class,
+                tasks -> {
+                    while (tasks.hasNext()) {
+                        TaskEntity taskEntity = tasks.next();
+
+                        Log.i("Tutorial", "==== Todo ====");
+                        Log.i("Tutorial", "Title: " + title);
+
+                        if (task.getBody() != null) {
+                            Log.i("Tutorial", "Body: " + body);
+                        }
+
+                        if (task.getState() != null) {
+                            Log.i("Tutorial", "State: " + state);
+                        }
+                    }
+                },
+                failure -> Log.e("Tutorial", "Could not query DataStore", failure)
+        );
 
 //        AppDatabase.getInstance(getApplicationContext()).taskDao().insertTask(task);
 

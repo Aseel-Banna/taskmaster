@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
@@ -76,15 +77,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     }
 
 
-    private List<Task> mTasks;
+    private ArrayList<Task> mTaskModels;
 
-    public TaskAdapter(List<Task> tasks, ListItemClickListener listener) {
+    public TaskAdapter(ArrayList<Task> taskModels, ListItemClickListener listener) {
         this.mOnClickListener = listener;
-        mTasks = tasks;
+        mTaskModels = taskModels;
     }
 
-    public TaskAdapter(List<Task> tasks) {
-        mTasks = tasks;
+    public TaskAdapter(ArrayList<Task> taskModels) {
+        mTaskModels = taskModels;
     }
 
         @NonNull
@@ -103,7 +104,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull TaskAdapter.ViewHolder holder, int position) {
-        Task task = mTasks.get(position);
+        Task task = mTaskModels.get(position);
 
         // Set item views based on your views and data model
         TextView taskTitle = holder.taskTitle;
@@ -118,7 +119,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return mTasks.size();
+        return mTaskModels.size();
     }
 
     public interface ListItemClickListener {

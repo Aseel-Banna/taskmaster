@@ -3,18 +3,20 @@ package com.example.myfirstapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Database;
 import androidx.room.Room;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.AWSDataStorePlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
 
     int count;
 
-    ArrayList<Task> tasks;
+    ArrayList<Task> taskModels;
     AppDatabase db;
 
 
@@ -61,13 +63,21 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         rvTasks = findViewById(R.id.recyclerView);
 
         taskDao = db.taskDao();
-        tasks = (ArrayList<Task>) taskDao.getAll();
+        taskModels =  (ArrayList<Task>) taskDao.getAll();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
-        rvTasks.setAdapter(new TaskAdapter(tasks, this));
+        rvTasks.setAdapter(new TaskAdapter(taskModels, this));
 
+        try {
+            Amplify.addPlugin(new AWSDataStorePlugin());
+            Amplify.configure(getApplicationContext());
+
+            Log.i("Tutorial", "Initialized Amplify");
+        } catch (AmplifyException e) {
+            Log.e("Tutorial", "Could not initialize Amplify", e);
+        }
 
     }
 
@@ -99,35 +109,35 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
     @Override
     protected void onResume() {
         super.onResume();
-        tasks = (ArrayList<Task>) taskDao.getAll();
+        taskModels = (ArrayList<Task>) taskDao.getAll();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
-        rvTasks.setAdapter(new TaskAdapter(tasks, this));
+        rvTasks.setAdapter(new TaskAdapter(taskModels, this));
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        tasks = (ArrayList<Task>) taskDao.getAll();
+        taskModels = (ArrayList<Task>) taskDao.getAll();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
-        rvTasks.setAdapter(new TaskAdapter(tasks, this));
+        rvTasks.setAdapter(new TaskAdapter(taskModels, this));
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
 
-        tasks = (ArrayList<Task>) taskDao.getAll();
+        taskModels = (ArrayList<Task>) taskDao.getAll();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
-        rvTasks.setAdapter(new TaskAdapter(tasks, this));
+        rvTasks.setAdapter(new TaskAdapter(taskModels, this));
     }
 }

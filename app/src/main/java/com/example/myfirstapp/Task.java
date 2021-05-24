@@ -2,14 +2,12 @@ package com.example.myfirstapp;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Fts4;
 import androidx.room.PrimaryKey;
-import androidx.room.Room;
 
 import java.util.ArrayList;
 
 //@Fts4(languageId = "lid")
-@Entity(tableName = "task")
+@Entity(tableName = "tasks")
 public class Task {
     @PrimaryKey(autoGenerate = true)
     public int id;
