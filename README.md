@@ -15,6 +15,8 @@ Also, there is a title for the tasks buttons that is related to the user name.<b
 ![image description](screenshots/setings.PNG)<br/>
 * Details: By default, it has no description for tasks, but once the user click on the task item in the home page and get to the details activity, a title related to the task, body and the state of the task will be displayed.<br/>
 ![image description](screenshots/details.PNG)<br/>
+* Sign Up: Allow the user to sign up using AWS.<br/>
+![image description](screenshots/capture.PNG)<br/>
 
 
 ## Lab 32

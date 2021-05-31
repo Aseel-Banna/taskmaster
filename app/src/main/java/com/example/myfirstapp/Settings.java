@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -40,5 +41,10 @@ public class Settings extends AppCompatActivity {
         Intent back = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(back);
         return true;
+    }
+
+    public void signup(View view) {
+        Intent intent = new Intent(Settings.this, SignUp.class);
+        startActivity(intent);
     }
 }

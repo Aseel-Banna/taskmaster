@@ -89,4 +89,8 @@ dependencies {
     implementation 'com.amplifyframework:aws-api:1.17.4'
     implementation 'com.amplifyframework:aws-datastore:1.17.4'
     implementation 'androidx.multidex:multidex:2.0.1'
+
+    implementation 'com.amplifyframework:core:1.17.4'
+    implementation 'com.amplifyframework:aws-auth-cognito:1.17.4'
+
 }
