@@ -15,39 +15,39 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the TaskEntity type in your schema. */
+/** This is an auto generated class representing the UserModel type in your schema. */
 @SuppressWarnings("all")
-@ModelConfig(pluralName = "TaskEntities")
-public final class TaskEntity implements Model {
-  public static final QueryField ID = field("TaskEntity", "id");
-  public static final QueryField TITLE = field("TaskEntity", "title");
-  public static final QueryField BODY = field("TaskEntity", "body");
-  public static final QueryField STATE = field("TaskEntity", "state");
+@ModelConfig(pluralName = "UserModels")
+public final class UserModel implements Model {
+  public static final QueryField ID = field("UserModel", "id");
+  public static final QueryField USERNAME = field("UserModel", "username");
+  public static final QueryField EMAIL = field("UserModel", "email");
+  public static final QueryField PASSWORD = field("UserModel", "password");
   private final @ModelField(targetType="ID", isRequired = true) String id;
-  private final @ModelField(targetType="String", isRequired = true) String title;
-  private final @ModelField(targetType="String") String body;
-  private final @ModelField(targetType="String") String state;
+  private final @ModelField(targetType="String", isRequired = true) String username;
+  private final @ModelField(targetType="String", isRequired = true) String email;
+  private final @ModelField(targetType="String", isRequired = true) String password;
   public String getId() {
       return id;
   }
   
-  public String getTitle() {
-      return title;
+  public String getUsername() {
+      return username;
   }
   
-  public String getBody() {
-      return body;
+  public String getEmail() {
+      return email;
   }
   
-  public String getState() {
-      return state;
+  public String getPassword() {
+      return password;
   }
   
-  private TaskEntity(String id, String title, String body, String state) {
+  private UserModel(String id, String username, String email, String password) {
     this.id = id;
-    this.title = title;
-    this.body = body;
-    this.state = state;
+    this.username = username;
+    this.email = email;
+    this.password = password;
   }
   
   @Override
@@ -57,11 +57,11 @@ public final class TaskEntity implements Model {
       } else if(obj == null || getClass() != obj.getClass()) {
         return false;
       } else {
-      TaskEntity taskEntity = (TaskEntity) obj;
-      return ObjectsCompat.equals(getId(), taskEntity.getId()) &&
-              ObjectsCompat.equals(getTitle(), taskEntity.getTitle()) &&
-              ObjectsCompat.equals(getBody(), taskEntity.getBody()) &&
-              ObjectsCompat.equals(getState(), taskEntity.getState());
+      UserModel userModel = (UserModel) obj;
+      return ObjectsCompat.equals(getId(), userModel.getId()) &&
+              ObjectsCompat.equals(getUsername(), userModel.getUsername()) &&
+              ObjectsCompat.equals(getEmail(), userModel.getEmail()) &&
+              ObjectsCompat.equals(getPassword(), userModel.getPassword());
       }
   }
   
@@ -69,9 +69,9 @@ public final class TaskEntity implements Model {
    public int hashCode() {
     return new StringBuilder()
       .append(getId())
-      .append(getTitle())
-      .append(getBody())
-      .append(getState())
+      .append(getUsername())
+      .append(getEmail())
+      .append(getPassword())
       .toString()
       .hashCode();
   }
@@ -79,16 +79,16 @@ public final class TaskEntity implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("TaskEntity {")
+      .append("UserModel {")
       .append("id=" + String.valueOf(getId()) + ", ")
-      .append("title=" + String.valueOf(getTitle()) + ", ")
-      .append("body=" + String.valueOf(getBody()) + ", ")
-      .append("state=" + String.valueOf(getState()))
+      .append("username=" + String.valueOf(getUsername()) + ", ")
+      .append("email=" + String.valueOf(getEmail()) + ", ")
+      .append("password=" + String.valueOf(getPassword()))
       .append("}")
       .toString();
   }
   
-  public static TitleStep builder() {
+  public static UsernameStep builder() {
       return new Builder();
   }
   
@@ -101,7 +101,7 @@ public final class TaskEntity implements Model {
    * @return an instance of this model with only ID populated
    * @throws IllegalArgumentException Checks that ID is in the proper format
    */
-  public static TaskEntity justId(String id) {
+  public static UserModel justId(String id) {
     try {
       UUID.fromString(id); // Check that ID is in the UUID format - if not an exception is thrown
     } catch (Exception exception) {
@@ -111,7 +111,7 @@ public final class TaskEntity implements Model {
               "creating a new object, use the standard builder method and leave the ID field blank."
       );
     }
-    return new TaskEntity(
+    return new UserModel(
       id,
       null,
       null,
@@ -121,55 +121,65 @@ public final class TaskEntity implements Model {
   
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
-      title,
-      body,
-      state);
+      username,
+      email,
+      password);
   }
-  public interface TitleStep {
-    BuildStep title(String title);
+  public interface UsernameStep {
+    EmailStep username(String username);
+  }
+  
+
+  public interface EmailStep {
+    PasswordStep email(String email);
+  }
+  
+
+  public interface PasswordStep {
+    BuildStep password(String password);
   }
   
 
   public interface BuildStep {
-    TaskEntity build();
+    UserModel build();
     BuildStep id(String id) throws IllegalArgumentException;
-    BuildStep body(String body);
-    BuildStep state(String state);
   }
   
 
-  public static class Builder implements TitleStep, BuildStep {
+  public static class Builder implements UsernameStep, EmailStep, PasswordStep, BuildStep {
     private String id;
-    private String title;
-    private String body;
-    private String state;
+    private String username;
+    private String email;
+    private String password;
     @Override
-     public TaskEntity build() {
+     public UserModel build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
-        return new TaskEntity(
+        return new UserModel(
           id,
-          title,
-          body,
-          state);
+          username,
+          email,
+          password);
     }
     
     @Override
-     public BuildStep title(String title) {
-        Objects.requireNonNull(title);
-        this.title = title;
+     public EmailStep username(String username) {
+        Objects.requireNonNull(username);
+        this.username = username;
         return this;
     }
     
     @Override
-     public BuildStep body(String body) {
-        this.body = body;
+     public PasswordStep email(String email) {
+        Objects.requireNonNull(email);
+        this.email = email;
         return this;
     }
     
     @Override
-     public BuildStep state(String state) {
-        this.state = state;
+     public BuildStep password(String password) {
+        Objects.requireNonNull(password);
+        this.password = password;
         return this;
     }
     
@@ -196,26 +206,26 @@ public final class TaskEntity implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String title, String body, String state) {
+    private CopyOfBuilder(String id, String username, String email, String password) {
       super.id(id);
-      super.title(title)
-        .body(body)
-        .state(state);
+      super.username(username)
+        .email(email)
+        .password(password);
     }
     
     @Override
-     public CopyOfBuilder title(String title) {
-      return (CopyOfBuilder) super.title(title);
+     public CopyOfBuilder username(String username) {
+      return (CopyOfBuilder) super.username(username);
     }
     
     @Override
-     public CopyOfBuilder body(String body) {
-      return (CopyOfBuilder) super.body(body);
+     public CopyOfBuilder email(String email) {
+      return (CopyOfBuilder) super.email(email);
     }
     
     @Override
-     public CopyOfBuilder state(String state) {
-      return (CopyOfBuilder) super.state(state);
+     public CopyOfBuilder password(String password) {
+      return (CopyOfBuilder) super.password(password);
     }
   }
   

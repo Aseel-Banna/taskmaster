@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.amplifyframework.AmplifyException;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
 
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
 
         rvTasks = findViewById(R.id.recyclerView);
 
+
         taskDao = db.taskDao();
         taskModels =  (ArrayList<Task>) taskDao.getAll();
 
@@ -71,13 +73,18 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
 
         try {
+            Amplify.addPlugin(new AWSCognitoAuthPlugin());
             Amplify.addPlugin(new AWSDataStorePlugin());
             Amplify.configure(getApplicationContext());
-
             Log.i("Tutorial", "Initialized Amplify");
         } catch (AmplifyException e) {
             Log.e("Tutorial", "Could not initialize Amplify", e);
         }
+//        if(Amplify.Auth.getCurrentUser() != null){
+//            System.out.println("USERNAME: " + Amplify.Auth.getCurrentUser().getUsername());
+//        }
+
+
 
     }
 
@@ -139,5 +146,22 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
+    }
+
+    public void goToSignUp(View view) {
+        Intent signup = new Intent( MainActivity.this, SignUp.class);
+        startActivity(signup);
+    }
+
+    public void goToLogin(View view) {
+        Intent signup = new Intent( MainActivity.this, Login.class);
+        startActivity(signup);
+    }
+
+    public void goToSignOut(View view) {
+        Amplify.Auth.signOut(
+                () -> Log.i("AuthQuickstart", "Signed out successfully"),
+                error -> Log.e("AuthQuickstart", error.toString())
+        );
     }
 }

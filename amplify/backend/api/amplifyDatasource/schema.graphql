@@ -18,3 +18,10 @@ type TaskEntity @model {
   state: String
 }
 
+type UserModel @model {
+  id: ID!
+  username: String!
+  email: String!
+  password: String!
+}
+
