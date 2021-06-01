@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         welcome_user = findViewById(R.id.user_welcome);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        welcome_user.setText(sharedPreferences.getString("username", "User") + "'s Tasks");
 
         db= Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "task_master").allowMainThreadQueries().build();
@@ -72,6 +71,13 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
 
+//        if(Amplify.Auth.getCurrentUser() == null) {
+            welcome_user.setText(sharedPreferences.getString("username", "User") + "'s Tasks");
+
+//        }else{
+//            welcome_user.setText(Amplify.Auth.getCurrentUser().getUsername() + "'s Tasks");
+//        }
+
         try {
             Amplify.addPlugin(new AWSCognitoAuthPlugin());
             Amplify.addPlugin(new AWSDataStorePlugin());
@@ -80,12 +86,6 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         } catch (AmplifyException e) {
             Log.e("Tutorial", "Could not initialize Amplify", e);
         }
-//        if(Amplify.Auth.getCurrentUser() != null){
-//            System.out.println("USERNAME: " + Amplify.Auth.getCurrentUser().getUsername());
-//        }
-
-
-
     }
 
     public void addTaskPage(View view) {
@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
+
     }
 
     @Override
@@ -134,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
+
     }
 
     @Override
@@ -146,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
+
     }
 
     public void goToSignUp(View view) {
