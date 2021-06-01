@@ -24,20 +24,18 @@ public class EmailCong extends AppCompatActivity {
 
         code = findViewById(R.id.code);
         confirm = findViewById(R.id.confirmEmail);
-
-        codeSave = code.getText().toString();
-        userName = getIntent().getExtras().get("username").toString();
-
     }
 
     public void confirmEmail(View view) {
+        codeSave = code.getText().toString();
+        userName = getIntent().getExtras().get("username").toString();
         Amplify.Auth.confirmSignUp(
                 userName,
                 codeSave,
                 result -> Log.i("AuthQuickstart", result.isSignUpComplete() ? "Confirm signUp succeeded" : "Confirm sign up not complete"),
                 error -> Log.e("AuthQuickstart", error.toString())
         );
-    Intent intent = new Intent(this, Home.class);
+    Intent intent = new Intent(this, MainActivity.class);
     startActivity(intent);
 
     }
