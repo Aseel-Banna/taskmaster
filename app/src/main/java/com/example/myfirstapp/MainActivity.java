@@ -1,5 +1,6 @@
 package com.example.myfirstapp;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -86,6 +87,10 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         } catch (AmplifyException e) {
             Log.e("Tutorial", "Could not initialize Amplify", e);
         }
+
+        Amplify.Auth.signInWithWebUI(this,
+                result -> Log.i("AuthQuickStart", result.toString()),
+                error ->  Log.i("AuthQuickStart", error.toString()));
     }
 
     public void addTaskPage(View view) {
@@ -167,4 +172,6 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
                 error -> Log.e("AuthQuickstart", error.toString())
         );
     }
+
+
 }

@@ -16,11 +16,14 @@ Also, there is a title for the tasks buttons that is related to the user name.<b
 * Details: By default, it has no description for tasks, but once the user click on the task item in the home page and get to the details activity, a title related to the task, body and the state of the task will be displayed.<br/>
 ![image description](screenshots/details.PNG)<br/>
 * Sign Up: Allow the user to sign up using AWS.<br/>
-![image description](screenshots/capture.PNG)<br/>
+![image description](screenshots/capture.PNGi)<br/>
 
 
 ## Lab 32
 For lab 32, we have used AWS amplify to create DynamoDB, and it is working fine and saving data in DynamoDB.
+
+## Lab 37 
+For lab 37, we added AWS Storage S3 to enable the user upload file.
 
 ## Test
 For testing hte app, we have used Espresso Test with implementing the dependencies in build.gradle file.

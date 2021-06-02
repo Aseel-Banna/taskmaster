@@ -1,9 +1,15 @@
 package com.example.myfirstapp;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.FileUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,9 +19,20 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.TaskEntity;
+import com.amplifyframework.storage.options.StorageUploadFileOptions;
+import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class AddTask extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -32,14 +49,13 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
     AppDatabase appDatabase;
     TaskDao taskDao;
 
+    String filePath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
-
-        submit = findViewById(R.id.textView7);
-        submit.setVisibility(View.INVISIBLE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Add Task");
         btn = findViewById(R.id.button3);
@@ -57,17 +73,22 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        try {
+            // Add these lines to add the AWSCognitoAuthPlugin and AWSS3StoragePlugin plugins
+            Amplify.addPlugin(new AWSCognitoAuthPlugin());
+            Amplify.addPlugin(new AWSS3StoragePlugin());
+            Amplify.configure(getApplicationContext());
+
+            Log.i("MyAmplifyApp", "Initialized Amplify");
+        } catch (AmplifyException error) {
+            Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
+        }
+
 
     }
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        Intent back = new Intent(getApplicationContext(), MainActivity.class);
-//        startActivity(back);
-//        return true;
-//        }
 
     public void submit(View view) {
-        submit.setVisibility(View.VISIBLE);
+//        submit.setVisibility(View.VISIBLE);
 
         taskTitle = findViewById(R.id.editTextTextPersonName);
         taskBody = findViewById(R.id.multiline);
@@ -75,8 +96,8 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
         title = taskTitle.getText().toString();
         body = taskBody.getText().toString();
 
-        Task task = new Task(title, body, state );
-
+        Task task = new Task(title, body, state, filePath );
+//
         TaskEntity item = TaskEntity.builder()
                 .title(title)
                 .body(body)
@@ -150,6 +171,47 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
 
     }
 
-//    AppDatabase db = Room.databaseBuilder(getApplicationContext(),
-//            AppDatabase.class, "tasks").build();
+
+    public void uploadFile(File file, String fileName) {
+        Amplify.Storage.uploadFile(
+                fileName,
+                file,
+                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+        );
+    }
+
+    public void getFileFromMobileStorage(){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        startActivityForResult(intent,RESULT_OK);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == AWSCognitoAuthPlugin.WEB_UI_SIGN_IN_ACTIVITY_CODE){
+            Amplify.Auth.handleWebUISignInResponse(data);
+        }
+
+        if (requestCode == RESULT_OK){
+            File file = new File(getApplicationContext().getFilesDir(), "uploads");
+                try {
+                    InputStream inputStream = getContentResolver().openInputStream(data.getData());
+                    FileUtils.copy(inputStream, new FileOutputStream(file));
+                    uploadFile(file, file.getName());
+                    filePath = file.getName();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
+        }
+
+    public void getFile(View view) {
+        getFileFromMobileStorage();
+    }
 }
