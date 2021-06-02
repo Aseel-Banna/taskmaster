@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.File;
 import java.util.ArrayList;
 
 //@Fts4(languageId = "lid")
@@ -21,13 +22,30 @@ public class Task {
     @ColumnInfo(name = "task_state")
     String state;
 
+    String file;
+
 //    @ColumnInfo(name = "lid")
 //    int languageId;
 
-    public Task(String title, String body, String state) {
+    public Task(String title, String body, String state, String file) {
         this.title = title;
         this.body = body;
         this.state = state;
+        this.file = file;
+    }
+
+//    public Task(String title, String body, String state) {
+//        this.title = title;
+//        this.body = body;
+//        this.state = state;
+//    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
     }
 
     public int getId() {

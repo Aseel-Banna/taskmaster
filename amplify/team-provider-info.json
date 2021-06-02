@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "taskmastera15bb934": {}
+      },
+      "function": {
+        "S3Trigger8de94762": {
+          "deploymentBucketName": "amplify-taskmaster-dev-112320-deployment",
+          "s3Key": "amplify-builds/S3Trigger8de94762-436e7952583244617441-build.zip"
+        }
       }
     }
   }
