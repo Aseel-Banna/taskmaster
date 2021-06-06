@@ -11,10 +11,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.FileUtils;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.amplifyframework.core.Amplify;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,10 +41,10 @@ public class Details extends AppCompatActivity {
         String body = getIntent().getStringExtra("body");
         String theState = getIntent().getStringExtra("state");
 
-        i = findViewById(R.id.imageView3);
-        i.setVisibility(View.INVISIBLE);
+//        i = findViewById(R.id.imageView3);
+//        i.setVisibility(View.INVISIBLE);
         file = findViewById(R.id.textView4);
-        file.setVisibility(View.INVISIBLE);
+//        file.setVisibility(View.INVISIBLE);
 
         welcome.setText(sharedPreferences.getString("username", "User")+"'s "+ title + " Detail");
         paragraph.setText(body);
@@ -52,19 +55,25 @@ public class Details extends AppCompatActivity {
             state.setText("No State");
         }
 
-        String fileName = getIntent().getStringExtra("file");
-        if (fileName.endsWith("jpg")  || fileName.endsWith("png") || fileName.endsWith("gif")  || fileName.endsWith("jpeg") ){
-            i.setVisibility(View.VISIBLE);
-            i.setImageBitmap(BitmapFactory.decodeFile(fileName));
-        }else {
-            file.setVisibility(View.VISIBLE);
-            file.setText(fileName);
-        }
+        downloadFile(getIntent().getStringExtra("fileName"));
+        file.setText(getIntent().getStringExtra("fileName"));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle( title +" Details");
 
     }
+
+
+    public void downloadFile(String fileName){
+        Amplify.Storage.downloadFile(
+                fileName,
+                new File(getApplicationContext().getFilesDir() + fileName),
+                result -> Log.i("MyAmplifyApp", "Successfully downloaded: " + result.getFile().getName()),
+                error -> Log.e("MyAmplifyApp",  "Download Failure", error)
+        );
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent back = new Intent(getApplicationContext(), MainActivity.class);

@@ -25,6 +25,9 @@ For lab 32, we have used AWS amplify to create DynamoDB, and it is working fine 
 ## Lab 37 
 For lab 37, we added AWS Storage S3 to enable the user upload file.
 
+## Lab 38 
+For lab 38, we added the notification service using firebase.
+
 ## Test
 For testing hte app, we have used Espresso Test with implementing the dependencies in build.gradle file.
 
