@@ -22,6 +22,7 @@ public class Task {
     @ColumnInfo(name = "task_state")
     String state;
 
+    @ColumnInfo(name="fileeName")
     String file;
 
 //    @ColumnInfo(name = "lid")

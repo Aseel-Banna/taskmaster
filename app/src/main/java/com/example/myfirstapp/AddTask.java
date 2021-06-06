@@ -5,11 +5,14 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.FileUtils;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class AddTask extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -49,7 +53,7 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
     AppDatabase appDatabase;
     TaskDao taskDao;
 
-    String filePath;
+    String filePath = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +92,6 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     public void submit(View view) {
-//        submit.setVisibility(View.VISIBLE);
 
         taskTitle = findViewById(R.id.editTextTextPersonName);
         taskBody = findViewById(R.id.multiline);
@@ -97,7 +100,7 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
         body = taskBody.getText().toString();
 
         Task task = new Task(title, body, state, filePath );
-//
+
         TaskEntity item = TaskEntity.builder()
                 .title(title)
                 .body(body)
@@ -129,22 +132,8 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
                 failure -> Log.e("Tutorial", "Could not query DataStore", failure)
         );
 
-//        AppDatabase.getInstance(getApplicationContext()).taskDao().insertTask(task);
 
         taskDao.insertTask(task);
-//        Intent intent = new Intent(AddTask.this, MainActivity.class);
-//        intent.putExtra("title", title);
-//        intent.putExtra("body", body);
-//        intent.putExtra("state", state);
-//        intent.putExtra("counts", count);
-//        tasks = Task.createTasksList(count);
-//        tasks.add(position, new Task(title, body, state));
-//        adapter2.notifyItemInserted(position);
-//
-//        position++;
-//        count ++;
-//        System.out.println("HHHHHHHHH"+tasks);
-//        startActivity(intent);
         finish();
     }
 
@@ -172,13 +161,15 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
 
-    public void uploadFile(File file, String fileName) {
-        Amplify.Storage.uploadFile(
-                fileName,
-                file,
-                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
-                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
-        );
+    public void uploadFile(Context context, Uri uri, String fileName) {
+        File file = new File(context.getFilesDir(), fileName);
+        File file2 = copy(uri, file);
+//        Amplify.Storage.uploadFile(
+//                fileName,
+//                file,
+//                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+//                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+//        );
     }
 
     public void getFileFromMobileStorage(){
@@ -191,7 +182,7 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        filePath = getFileName(data.getData());
         if (requestCode == AWSCognitoAuthPlugin.WEB_UI_SIGN_IN_ACTIVITY_CODE){
             Amplify.Auth.handleWebUISignInResponse(data);
         }
@@ -201,7 +192,7 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
                 try {
                     InputStream inputStream = getContentResolver().openInputStream(data.getData());
                     FileUtils.copy(inputStream, new FileOutputStream(file));
-                    uploadFile(file, file.getName());
+                    uploadFile(this, data.getData(), filePath);
                     filePath = file.getName();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -211,7 +202,34 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
         }
         }
 
+
+    public String getFileName(Uri uri){
+        Cursor result = getContentResolver().query(uri, null, null, null, null);
+        int index = result.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        result.moveToFirst();
+        return result.getString(index);
+    }
+
     public void getFile(View view) {
         getFileFromMobileStorage();
     }
+
+    private File copy(Uri source, File destination){
+        try{
+            InputStream inputStream = getContentResolver().openInputStream(source);
+            OutputStream outputStream = new FileOutputStream(destination);
+            byte[] buffer = new byte[1024];
+            int len;
+            while((len = inputStream.read(buffer)) > 0){
+                outputStream.write(buffer, 0, len);
+            }
+            outputStream.close();
+            inputStream.close();
+            return destination;
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return new File(source.toString());
+    }
+
 }
