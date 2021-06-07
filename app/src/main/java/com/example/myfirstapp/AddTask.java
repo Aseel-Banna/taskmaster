@@ -3,11 +3,15 @@ package com.example.myfirstapp;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.room.Room;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +32,9 @@ import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.TaskEntity;
 import com.amplifyframework.storage.options.StorageUploadFileOptions;
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -47,13 +54,15 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
     Button btn;
 
     ArrayList<Task> tasks;
-    int position= 0;
+    int position = 0;
     int count = 1;
     TaskAdapter adapter2;
     AppDatabase appDatabase;
     TaskDao taskDao;
 
     String filePath = "";
+
+    FusedLocationProviderClient fusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +86,10 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+
         try {
             // Add these lines to add the AWSCognitoAuthPlugin and AWSS3StoragePlugin plugins
             Amplify.addPlugin(new AWSCognitoAuthPlugin());
@@ -99,7 +112,7 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
         title = taskTitle.getText().toString();
         body = taskBody.getText().toString();
 
-        Task task = new Task(title, body, state, filePath );
+        Task task = new Task(title, body, state, filePath);
 
         TaskEntity item = TaskEntity.builder()
                 .title(title)
@@ -132,6 +145,26 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
                 failure -> Log.e("Tutorial", "Could not query DataStore", failure)
         );
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            // Logic to handle location object
+                        }
+                    }
+                });
 
         taskDao.insertTask(task);
         finish();
