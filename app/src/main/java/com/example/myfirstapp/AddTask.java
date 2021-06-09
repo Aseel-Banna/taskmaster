@@ -51,9 +51,9 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
         dropdown.setOnItemSelectedListener(this);
         adapter2 = new TaskAdapter(tasks);
 
-        appDatabase = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "task_master").allowMainThreadQueries().build();
-        taskDao = appDatabase.taskDao();
+//        appDatabase = Room.databaseBuilder(getApplicationContext(),
+//                AppDatabase.class, "task_master").allowMainThreadQueries().build();
+//        taskDao = appDatabase.taskDao();
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -84,7 +84,7 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
                 .build();
 
         Amplify.DataStore.save(item,
-                success -> Log.i("Tutorial", "Saved item: " + success.item().getTitle()),
+                success -> Log.i("Tutorial", "Saved item: " + success.item().getTitle() + " This is body "+success.item().getBody()),
                 error -> Log.e("Tutorial", "Could not save item to DataStore", error)
         );
 
@@ -110,20 +110,7 @@ public class AddTask extends AppCompatActivity implements AdapterView.OnItemSele
 
 //        AppDatabase.getInstance(getApplicationContext()).taskDao().insertTask(task);
 
-        taskDao.insertTask(task);
-//        Intent intent = new Intent(AddTask.this, MainActivity.class);
-//        intent.putExtra("title", title);
-//        intent.putExtra("body", body);
-//        intent.putExtra("state", state);
-//        intent.putExtra("counts", count);
-//        tasks = Task.createTasksList(count);
-//        tasks.add(position, new Task(title, body, state));
-//        adapter2.notifyItemInserted(position);
-//
-//        position++;
-//        count ++;
-//        System.out.println("HHHHHHHHH"+tasks);
-//        startActivity(intent);
+//        taskDao.insertTask(task);
         finish();
     }
 

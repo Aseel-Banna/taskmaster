@@ -17,9 +17,9 @@ import android.widget.TextView;
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
+import com.amplifyframework.datastore.generated.model.TaskEntity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TaskAdapter.ListItemClickListener {
 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
     int count;
 
     ArrayList<Task> taskModels;
-    AppDatabase db;
+//    AppDatabase db;
 
 
     @Override
@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
 
         welcome_user.setText(sharedPreferences.getString("username", "User") + "'s Tasks");
 
-        db= Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "task_master").allowMainThreadQueries().build();
+//        db= Room.databaseBuilder(getApplicationContext(),
+//                AppDatabase.class, "task_master").allowMainThreadQueries().build();
 
         taskTitle = findViewById(R.id.taskTitle);
         taskBody = findViewById(R.id.taskBody);
@@ -62,13 +62,8 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
 
         rvTasks = findViewById(R.id.recyclerView);
 
-        taskDao = db.taskDao();
-        taskModels =  (ArrayList<Task>) taskDao.getAll();
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvTasks.setLayoutManager(layoutManager);
-        rvTasks.setLayoutManager(new LinearLayoutManager(this));
-        rvTasks.setAdapter(new TaskAdapter(taskModels, this));
+//        taskDao = db.taskDao();
+//        taskModels =  (ArrayList<Task>) taskDao.getAll();
 
         try {
             Amplify.addPlugin(new AWSDataStorePlugin());
@@ -78,6 +73,28 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         } catch (AmplifyException e) {
             Log.e("Tutorial", "Could not initialize Amplify", e);
         }
+
+        taskModels = new ArrayList<>();
+//        Amplify.DataStore.query(TaskEntity.class,
+//                tasks -> {
+//                    while (tasks.hasNext()) {
+//                        TaskEntity task = tasks.next();
+//
+//                        if (task.getTitle() != null) {
+//
+//                            this.taskModels.add(new Task(task.getTitle(), task.getBody(), task.getState()));
+//                        }
+//
+//                    }
+//                },
+//                failure -> Log.e("Tutorial", "Could not query DataStore", failure)
+//        );
+
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvTasks.setLayoutManager(layoutManager);
+        rvTasks.setLayoutManager(new LinearLayoutManager(this));
+        rvTasks.setAdapter(new TaskAdapter(taskModels, this));
 
     }
 
@@ -109,35 +126,87 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
     @Override
     protected void onResume() {
         super.onResume();
-        taskModels = (ArrayList<Task>) taskDao.getAll();
+//        taskModels = (ArrayList<Task>) taskDao.getAll();
+
+        taskModels = new ArrayList<>();
+
+        Amplify.DataStore.query(TaskEntity.class,
+                tasks -> {
+                    while (tasks.hasNext()) {
+                        TaskEntity task = tasks.next();
+
+                        if (task.getTitle() != null) {
+
+                            this.taskModels.add(new Task(task.getTitle(), task.getBody(), task.getState()));
+                        }
+
+                    }
+                },
+                failure -> Log.e("Tutorial", "Could not query DataStore", failure)
+        );
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
+//        rvTasks.setAdapter(new TaskAdapter(taskModels, this));
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        taskModels = (ArrayList<Task>) taskDao.getAll();
+//        taskModels = (ArrayList<Task>) taskDao.getAll();
+
+//        Amplify.DataStore.query(TaskEntity.class,
+//                tasks -> {
+//                    while (tasks.hasNext()) {
+//                        TaskEntity task = tasks.next();
+//
+//                        if (task.getTitle() != null) {
+//
+//                            this.taskModels.add(new Task(task.getTitle(), task.getBody(), task.getState()));
+//                        }
+//
+//                    }
+//                },
+//                failure -> Log.e("Tutorial", "Could not query DataStore", failure)
+//        );
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
+//        rvTasks.setAdapter(new TaskAdapter(taskModels, this));
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
 
-        taskModels = (ArrayList<Task>) taskDao.getAll();
+//        taskModels = (ArrayList<Task>) taskDao.getAll();
+//        Amplify.DataStore.query(TaskEntity.class,
+//                tasks -> {
+//                    while (tasks.hasNext()) {
+//                        TaskEntity task = tasks.next();
+//
+//                        if (task.getTitle() != null) {
+//
+//                            this.taskModels.add(new Task(task.getTitle(), task.getBody(), task.getState()));
+//                        }
+//
+//                    }
+//                },
+//                failure -> Log.e("Tutorial", "Could not query DataStore", failure)
+//        );
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
+//        rvTasks.setAdapter(new TaskAdapter(taskModels, this));
     }
 }
