@@ -1,10 +1,12 @@
 package com.example.myfirstapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,9 +20,14 @@ import com.amplifyframework.AmplifyException;
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TaskAdapter.ListItemClickListener {
 
@@ -78,6 +85,21 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
 //            welcome_user.setText(Amplify.Auth.getCurrentUser().getUsername() + "'s Tasks");
 //        }
 
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("FCM token ...", "Fetching FCM is failed", task.getException());
+                            return;
+                        }
+                        String token = task.getResult();
+                        Log.d("FCM TOKEN ...",task.getResult());
+                    }
+                });
+
+
         try {
             Amplify.addPlugin(new AWSCognitoAuthPlugin());
             Amplify.addPlugin(new AWSDataStorePlugin());
@@ -86,6 +108,10 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         } catch (AmplifyException e) {
             Log.e("Tutorial", "Could not initialize Amplify", e);
         }
+
+        Amplify.Auth.signInWithWebUI(this,
+                result -> Log.i("AuthQuickStart", result.toString()),
+                error ->  Log.i("AuthQuickStart", error.toString()));
     }
 
     public void addTaskPage(View view) {
@@ -167,4 +193,35 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
                 error -> Log.e("AuthQuickstart", error.toString())
         );
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == AWSCognitoAuthPlugin.WEB_UI_SIGN_IN_ACTIVITY_CODE) {
+            Amplify.Auth.handleWebUISignInResponse(data);
+        }
+    }
+
+    protected void uploadFile(Context context){
+        File file = new File(context.getFilesDir(), "key0");
+
+        try{
+            FileWriter fileWriter = new FileWriter(file);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.append("test");
+            bufferedWriter.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        Amplify.Storage.uploadFile(
+                "key0",
+                file,
+                result -> Log.i("uploadFile", "Successfully Uploaded: "+ result.getKey()),
+                error -> Log.e("uploadFile", "Storage Failure: "+error)
+        );
+
+    }
+
+
 }

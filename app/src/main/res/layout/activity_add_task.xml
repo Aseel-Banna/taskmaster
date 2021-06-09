@@ -30,8 +30,8 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="16dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="Task Title"
+        android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -69,8 +69,8 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="16dp"
         android:ems="10"
-        android:inputType="textMultiLine"
         android:hint="Task Body"
+        android:inputType="textMultiLine"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
@@ -104,41 +104,26 @@
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:text="Upload File"
         android:layout_marginTop="15dp"
-        android:onClick="submit"
-        android:text="Add Task"
+        android:onClick="getFile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner1" />
 
-    <TextView
-        android:id="@+id/textView4"
+    <Button
+        android:id="@+id/button6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="450dp"
-        android:text=" Total Tasks: 0"
-        android:textColor="#0E0E0E"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/button3"
+        android:onClick="submit"
+        android:text="Add Task"/>
 
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Submitted!"
-        android:textColor="#1EA7E4"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,8 +24,19 @@ Also, there is a title for the tasks buttons that is related to the user name.<b
 ## Lab 32
 For lab 32, we have used AWS amplify to create DynamoDB, and it is working fine and saving data in DynamoDB.
 
+
 ## Lab 36
 For lab 36, we used AWS authentication to enable the user create a profile or sign up and confirm his/her email.  
+
+## Lab 37 
+For lab 37, we added AWS Storage S3 to enable the user upload file.
+
+## Lab 38 
+For lab 38, we added the notification service using firebase.
+
+## Lab 41
+For lab 41, we added the ability to files to be sharable with our app.
+
 
 ## Test
 For testing hte app, we have used Espresso Test with implementing the dependencies in build.gradle file.
