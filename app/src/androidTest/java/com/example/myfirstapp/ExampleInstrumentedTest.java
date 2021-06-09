@@ -21,6 +21,8 @@ import org.junit.runner.RunWith;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
@@ -57,6 +59,23 @@ public class ExampleInstrumentedTest {
     @Test
     public void testTitle() {
         onView(withId(R.id.title)).check(matches(withText("My Tasks")));
+        onView(withId(R.id.settings)).perform(click());
+        onView(withId(R.id.editTextTextPersonName3)).perform(replaceText("Aseel"), closeSoftKeyboard());
+        onView(withId(R.id.button4)).perform(click());
+        onView(withId(R.id.user_welcome)).check(matches(withText("Aseel's Tasks")));
+    }
+
+
+    @Test
+    public void testAddTask() {
+        onView(withId(R.id.button)).perform(click());
+        onView(withId(R.id.editTextTextPersonName)).perform(replaceText("Task 1"), closeSoftKeyboard());
+        onView(withId(R.id.multiline)).perform(replaceText("Task 1's Body"), closeSoftKeyboard());
+        onView(withId(R.id.button3)).perform(click());
+        onView(withId(R.id.taskTitle)).check(matches(withText("Task 1")));
+        onView(withId(R.id.taskBody)).check(matches(withText("Task 1's Body")));
+        onView(withId(R.id.taskState)).check(matches(withText("new")));
+
     }
 
 // Test the image
