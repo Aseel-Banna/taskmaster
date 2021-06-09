@@ -1,12 +1,10 @@
 package com.example.myfirstapp;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,16 +15,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.amplifyframework.AmplifyException;
-import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.firebase.messaging.FirebaseMessaging;
+import com.amplifyframework.datastore.generated.model.TaskEntity;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements TaskAdapter.ListItemClickListener {
@@ -46,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
     int count;
 
     ArrayList<Task> taskModels;
-    AppDatabase db;
+//    AppDatabase db;
 
 
     @Override
@@ -59,9 +51,10 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
         welcome_user = findViewById(R.id.user_welcome);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+        welcome_user.setText(sharedPreferences.getString("username", "User") + "'s Tasks");
 
-        db= Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "task_master").allowMainThreadQueries().build();
+//        db= Room.databaseBuilder(getApplicationContext(),
+//                AppDatabase.class, "task_master").allowMainThreadQueries().build();
 
         taskTitle = findViewById(R.id.taskTitle);
         taskBody = findViewById(R.id.taskBody);
@@ -69,49 +62,40 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
 
         rvTasks = findViewById(R.id.recyclerView);
 
+//        taskDao = db.taskDao();
+//        taskModels =  (ArrayList<Task>) taskDao.getAll();
 
-        taskDao = db.taskDao();
-        taskModels =  (ArrayList<Task>) taskDao.getAll();
+        try {
+            Amplify.addPlugin(new AWSDataStorePlugin());
+            Amplify.configure(getApplicationContext());
+
+            Log.i("Tutorial", "Initialized Amplify");
+        } catch (AmplifyException e) {
+            Log.e("Tutorial", "Could not initialize Amplify", e);
+        }
+
+        taskModels = new ArrayList<>();
+//        Amplify.DataStore.query(TaskEntity.class,
+//                tasks -> {
+//                    while (tasks.hasNext()) {
+//                        TaskEntity task = tasks.next();
+//
+//                        if (task.getTitle() != null) {
+//
+//                            this.taskModels.add(new Task(task.getTitle(), task.getBody(), task.getState()));
+//                        }
+//
+//                    }
+//                },
+//                failure -> Log.e("Tutorial", "Could not query DataStore", failure)
+//        );
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
 
-//        if(Amplify.Auth.getCurrentUser() == null) {
-            welcome_user.setText(sharedPreferences.getString("username", "User") + "'s Tasks");
-
-//        }else{
-//            welcome_user.setText(Amplify.Auth.getCurrentUser().getUsername() + "'s Tasks");
-//        }
-
-
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("FCM token ...", "Fetching FCM is failed", task.getException());
-                            return;
-                        }
-                        String token = task.getResult();
-                        Log.d("FCM TOKEN ...",task.getResult());
-                    }
-                });
-
-
-        try {
-            Amplify.addPlugin(new AWSCognitoAuthPlugin());
-            Amplify.addPlugin(new AWSDataStorePlugin());
-            Amplify.configure(getApplicationContext());
-            Log.i("Tutorial", "Initialized Amplify");
-        } catch (AmplifyException e) {
-            Log.e("Tutorial", "Could not initialize Amplify", e);
-        }
-
-        Amplify.Auth.signInWithWebUI(this,
-                result -> Log.i("AuthQuickStart", result.toString()),
-                error ->  Log.i("AuthQuickStart", error.toString()));
     }
 
     public void addTaskPage(View view) {
@@ -142,86 +126,87 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ListI
     @Override
     protected void onResume() {
         super.onResume();
-        taskModels = (ArrayList<Task>) taskDao.getAll();
+//        taskModels = (ArrayList<Task>) taskDao.getAll();
+
+        taskModels = new ArrayList<>();
+
+        Amplify.DataStore.query(TaskEntity.class,
+                tasks -> {
+                    while (tasks.hasNext()) {
+                        TaskEntity task = tasks.next();
+
+                        if (task.getTitle() != null) {
+
+                            this.taskModels.add(new Task(task.getTitle(), task.getBody(), task.getState()));
+                        }
+
+                    }
+                },
+                failure -> Log.e("Tutorial", "Could not query DataStore", failure)
+        );
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
-
+//        rvTasks.setAdapter(new TaskAdapter(taskModels, this));
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        taskModels = (ArrayList<Task>) taskDao.getAll();
+//        taskModels = (ArrayList<Task>) taskDao.getAll();
+
+//        Amplify.DataStore.query(TaskEntity.class,
+//                tasks -> {
+//                    while (tasks.hasNext()) {
+//                        TaskEntity task = tasks.next();
+//
+//                        if (task.getTitle() != null) {
+//
+//                            this.taskModels.add(new Task(task.getTitle(), task.getBody(), task.getState()));
+//                        }
+//
+//                    }
+//                },
+//                failure -> Log.e("Tutorial", "Could not query DataStore", failure)
+//        );
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
-
+//        rvTasks.setAdapter(new TaskAdapter(taskModels, this));
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
 
-        taskModels = (ArrayList<Task>) taskDao.getAll();
+//        taskModels = (ArrayList<Task>) taskDao.getAll();
+//        Amplify.DataStore.query(TaskEntity.class,
+//                tasks -> {
+//                    while (tasks.hasNext()) {
+//                        TaskEntity task = tasks.next();
+//
+//                        if (task.getTitle() != null) {
+//
+//                            this.taskModels.add(new Task(task.getTitle(), task.getBody(), task.getState()));
+//                        }
+//
+//                    }
+//                },
+//                failure -> Log.e("Tutorial", "Could not query DataStore", failure)
+//        );
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTasks.setLayoutManager(layoutManager);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         rvTasks.setAdapter(new TaskAdapter(taskModels, this));
-
+//        rvTasks.setAdapter(new TaskAdapter(taskModels, this));
     }
-
-    public void goToSignUp(View view) {
-        Intent signup = new Intent( MainActivity.this, SignUp.class);
-        startActivity(signup);
-    }
-
-    public void goToLogin(View view) {
-        Intent signup = new Intent( MainActivity.this, Login.class);
-        startActivity(signup);
-    }
-
-    public void goToSignOut(View view) {
-        Amplify.Auth.signOut(
-                () -> Log.i("AuthQuickstart", "Signed out successfully"),
-                error -> Log.e("AuthQuickstart", error.toString())
-        );
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == AWSCognitoAuthPlugin.WEB_UI_SIGN_IN_ACTIVITY_CODE) {
-            Amplify.Auth.handleWebUISignInResponse(data);
-        }
-    }
-
-    protected void uploadFile(Context context){
-        File file = new File(context.getFilesDir(), "key0");
-
-        try{
-            FileWriter fileWriter = new FileWriter(file);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.append("test");
-            bufferedWriter.close();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        Amplify.Storage.uploadFile(
-                "key0",
-                file,
-                result -> Log.i("uploadFile", "Successfully Uploaded: "+ result.getKey()),
-                error -> Log.e("uploadFile", "Storage Failure: "+error)
-        );
-
-    }
-
-
 }
