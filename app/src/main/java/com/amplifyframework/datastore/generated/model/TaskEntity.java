@@ -6,7 +6,6 @@ import java.util.UUID;
 import java.util.Objects;
 
 import androidx.core.util.ObjectsCompat;
-import androidx.room.Entity;
 
 import com.amplifyframework.core.model.Model;
 import com.amplifyframework.core.model.annotations.Index;

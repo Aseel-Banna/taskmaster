@@ -9,11 +9,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFirstApp">
-        <activity android:name=".Settings"></activity>
+        <activity android:name=".ShareActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Home" />
+        <activity android:name=".EmailCong" />
+        <activity android:name=".SignUp" />
+        <activity android:name=".Login" />
+        <activity android:name=".Settings" />
         <activity android:name=".Details" />
         <activity android:name=".AllTasks" />
-        <activity android:name=".AddTask"
-            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".AddTask"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +36,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="MyNavigationService"
+            android:foregroundServiceType="location" >
+        <!-- Any inner elements would go here. -->
+        </service>
     </application>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 </manifest>

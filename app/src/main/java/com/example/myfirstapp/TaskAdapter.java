@@ -20,6 +20,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         private TextView taskTitle;
         private TextView taskBody;
         private TextView taskState;
+        private TextView taskFile;
 
 
             public ViewHolder (View itemView) {
@@ -27,6 +28,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                 taskTitle = itemView.findViewById(R.id.taskTitle);
                 taskBody = itemView.findViewById(R.id.taskBody);
                 taskState = itemView.findViewById(R.id.taskState);
+                taskFile = itemView.findViewById(R.id.taskFile);
+                taskFile.setVisibility(View.INVISIBLE);
                 itemView.setOnClickListener(this);
         }
 
@@ -39,6 +42,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         public TextView getTextView3() {
             return taskState;
         }
+        public TextView getTextView4() {
+            return taskFile;
+        }
+
 
 
         @Override
@@ -48,6 +55,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             intent.putExtra("title", getTextView().getText() );
             intent.putExtra("body",  getTextView2().getText());
             intent.putExtra("state", getTextView3().getText());
+            intent.putExtra("file", getTextView4().getUrls());
             itemView.getContext().startActivity(intent);
 //            switch (clickedPosition) {
 //                case 0:
@@ -115,6 +123,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         TextView taskState = holder.taskState;
         taskState.setText(task.getState());
+
+        TextView taskFile = holder.taskFile;
+        taskFile.setText(task.getFile());
+
     }
 
     @Override
